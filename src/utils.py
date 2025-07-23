@@ -35,14 +35,31 @@ def convert_to_markdown(path: str) -> str:
     # Khởi tạo converter
     converter = MarkItDown()
 
-    # Chuyển file .docx sang markdown
+    # Chuyển file sang markdown
     result = converter.convert(path)
 
     return result.markdown
 
 
+def has_hash_changed(path: str) -> bool:
+    # Hash toàn bộ thư mục data
+    old_hash = ""
+    old_hash_file = os.path.join(path, "hash.hsh")
+    if os.path.exists(old_hash_file):
+        with open(old_hash_file, "r") as f:
+            old_hash = f.read().strip()
+
+    hash = hash_directory(path, "hash.hsh")
+
+    if old_hash == hash:
+        return False
+
+    with open(old_hash_file, "w") as f:
+        f.write(hash)
+
+    return True
 
 if __name__ == "__main__":
-    input_file = "data/QA_STATIC.txt"
+    input_file = "data/data-20250723T011529Z-1-001/data/news.csv"
     result = convert_to_markdown(input_file)
-    print(result)
+    print(result[:500])

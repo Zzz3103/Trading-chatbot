@@ -1,5 +1,5 @@
 from index_data import Vector_Store
-from chat import ask_llm
+from chat import ask_llm_stream
 
 def main():
     vector_store = Vector_Store()
@@ -12,11 +12,11 @@ def main():
         context = vector_store.search(query=question, top_k=1)
 
         question += "\n"
-        for label, text, score in context:
+        for text, score in context:
             question += str(text) + "\n"
 
         print(f"Response:")
-        for chunk in ask_llm(question):
+        for chunk in ask_llm_stream(question):
             print(chunk, end='')
 
 if __name__ == "__main__":
