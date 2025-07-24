@@ -9,17 +9,17 @@ def main():
     vector_store.index_data(path="data")
 
     # đọc file xlxs
-    df = pd.read_excel("test_question.xlsx")
+    df = pd.read_excel("data/test_question.xlsx")
 
     # duyệt từng dòng
     answers = []
     for _, row in df.iterrows():
         question = row['inputs']
         docs = vector_store.search(query=question, top_k=3)
-        docs = [doc for doc in docs if doc.metadata["score"] >= 0.4]
+        docs = [doc for doc in docs if doc.metadata["score"] >= 0.1]
         prompt = render_prompt("templates/prompt.txt", docs, question=question)
         answer = ask_llm(prompt)
-        answer.replace("\n", " ")
+        answer = answer.replace("\n", " ")
         answers.append(answer)
 
         print("=====================================")
@@ -33,3 +33,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

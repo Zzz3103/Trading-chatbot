@@ -73,9 +73,23 @@ if __name__ == "__main__":
 
     vector_store = Vector_Store()
     index_data = vector_store.index_data(path="data")
-    question = "Cổ phiếu là gì"
-    docs = vector_store.search(query=question, top_k = 3)
-    docs = [doc for doc in docs if doc.metadata["score"] >= 0.4]
+    question = "HPG thuộc xu hướng nào"
+    docs = vector_store.search(query=question, top_k = 5)
+    docs = [doc for doc in docs if doc.metadata["score"] >= 0.1]
     prompt = render_prompt("templates/prompt.txt", docs, question=question)
 
     print(prompt)
+
+    # from langchain.schema import Document
+    # from langchain.text_splitter import RecursiveCharacterTextSplitter
+  
+    # text_splitter = RecursiveCharacterTextSplitter.from_tiktoken_encoder(
+    #         chunk_size=512, chunk_overlap=126
+    #     )
+
+    # m = convert_to_markdown("/home/khai/Trading-chatbot/data/data-20250723T011529Z-1-001/data/stockcode_data/dsc_text_files/HPG – MUA.txt")
+    # docs = [Document(page_content=m)]
+    # chunk_contents = text_splitter.transform_documents(docs)
+    # chunk_contents = ["Nguồn: " + '\n' + doc.page_content.replace("\n", " ") for doc in chunk_contents]
+    # for i in range(len(chunk_contents)):
+    #     print(f"Chunk {i}: {chunk_contents[i]}")
