@@ -127,14 +127,13 @@ class Vector_Store:
             limit=top_k
         )
 
-        return [(hit.payload["text"], hit.score) for hit in hits]
+        return [Document(page_content=hit.payload["text"], metadata={"score": hit.score}) for hit in hits]
 
 
 if __name__ == "__main__":
     vector_store = Vector_Store()
     index_data = vector_store.index_data(path="data")
     context = vector_store.search(query="chứng khoán là gì", top_k = 3)
-    for text, score in context:
-        print(f"Text: {text}, Score: {score}")
-        print("\n")
+    for doc in context:
+        print(doc.page_content, doc.metadata)
 

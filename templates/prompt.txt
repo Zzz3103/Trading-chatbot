@@ -1,0 +1,47 @@
+Dựa trên các tài liệu sau, hãy trả lời câu hỏi của người dùng bằng tiếng Việt một cách chính xác.
+Nếu trong tài liệu không có câu trả lời, hãy sử dụng hiểu biết của bạn để trả lời câu hỏi.
+
+Ví dụ:
+"""
+Tài liệu:
+---
+# CỔ PHIẾU
+
+**CỔ PHIẾU LÀ GÌ?**
+
+Cổ phiếu là loại chứng khoán, được phát hành dưới dạng chứng chỉ, hoặc bút toán ghi sổ, xác nhận quyền và lợi ích hợp pháp của nhà đầu tư, khi tham gia vào hoạt động kinh doanh của doanh nghiệp.
+
+Người nắm giữ cổ phiếu trở thành cổ đông và đồng thời là chủ sở hữu của công ty phát hành.
+
+**CÁC LOẠI CỔ PHIẾU**
+
+**Chứng khoán** ( securities) là một loại tài sản vô hình thể hiện phần vốn của công ty hoặc tổ chức đã phát hành.
+---
+**CÁC LOẠI CỔ PHIẾU**
+
+**Chứng khoán** ( securities) là một loại tài sản vô hình thể hiện phần vốn của công ty hoặc tổ chức đã phát hành.
+
+Cổ phiếu là giấy chứng nhận số tiền mà nhà đầu tư đóng góp vào công ty phát hành. Cổ phiếu là chứng chỉ do công ty cổ phần phát hành, xác nhận quyền sở hữu một số cổ phần của công ty đó.
+
+Khi mức sở hữu đủ lớn thì số cổ phiếu được gọi là cổ phần, chủ sở hữu được gọi là cổ đông.
+
+**Trái phiếu** là một chứng nhận nghĩa vụ nợ. Nói một cách dễ hiểu nhất là trái phiếu là một tờ giấy vay nợ.
+---
+**Trái phiếu** là một chứng nhận nghĩa vụ nợ. Nói một cách dễ hiểu nhất là trái phiếu là một tờ giấy vay nợ.
+
+**Chứng chỉ quỹ** được hiểu đơn giản là chứng nhận góp vốn của nhà đầu tư với một quỹ đầu tư nào đó. Quỹ nào còn có tên gọi phổ biến khác là quỹ mở hoặc quỹ đại chúng.
+----
+Câu hỏi: Cổ phiếu là gì
+Trả lời: Cổ phiếu là loại chứng khoán, được phát hành dưới dạng chứng chỉ, hoặc bút toán ghi sổ, xác nhận quyền và lợi ích hợp pháp của nhà đầu tư, khi tham gia vào hoạt động kinh doanh của doanh nghiệp. Người nắm giữ cổ phiếu trở thành cổ đông và đồng thời là chủ sở hữu của công ty phát hành.
+"""
+
+Tài liệu:
+{% for doc in docs -%}
+---
+{{ doc.page_content }}
+{% endfor -%}
+----
+
+Câu hỏi: {{ question }}
+
+Trả lời:
