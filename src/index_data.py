@@ -74,6 +74,7 @@ class Vector_Store:
         files = get_files_in_directory(path)
         
         for f in files:
+            file_name = f.split("/")[-1]
             # Xử lý file .docx và .txt 
             if f.endswith(".docx") or f.endswith(".txt") or f.endswith(".pdf"):
                 # continue
@@ -81,7 +82,7 @@ class Vector_Store:
                 markdown_text = convert_to_markdown(f)
                 docs = [Document(page_content=markdown_text)]
                 chunk_contents = text_splitter.transform_documents(docs)
-                chunk_contents = [doc.page_content for doc in chunk_contents]
+                chunk_contents = ["Nguồn: " + file_name + '\n' + doc.page_content.replace("\n", " ") for doc in chunk_contents if len(doc.page_content) >= 40]
 
             # Xử lý file .csv
             elif f.endswith(".csv"):
