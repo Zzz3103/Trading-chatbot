@@ -1,6 +1,8 @@
 import os
 import hashlib
 from markitdown import MarkItDown
+from jinja2 import Template
+
 
 def hash_directory(path, exclude_file=None):
     sha256 = hashlib.sha256()
@@ -59,7 +61,21 @@ def has_hash_changed(path: str) -> bool:
 
     return True
 
+
+def render_prompt(template_path, docs, question):
+    with open(template_path, "r", encoding="utf-8") as f:
+        template_str = f.read()
+    template = Template(template_str)
+    return template.render(docs=docs, question=question)
+
 if __name__ == "__main__":
-    input_file = "data/data-20250723T011529Z-1-001/data/news.csv"
-    result = convert_to_markdown(input_file)
-    print(result[:500])
+    from index_data import Vector_Store
+
+    vector_store = Vector_Store()
+    index_data = vector_store.index_data(path="data")
+    question = "Cổ phiếu là gì"
+    docs = vector_store.search(query=question, top_k = 3)
+    docs = [doc for doc in docs if doc.metadata["score"] >= 0.4]
+    prompt = render_prompt("templates/prompt.txt", docs, question=question)
+
+    print(prompt)

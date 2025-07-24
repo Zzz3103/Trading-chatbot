@@ -1,6 +1,7 @@
 from index_data import Vector_Store
 from chat import ask_llm_stream
 
+
 def main():
     vector_store = Vector_Store()
     vector_store.index_data(path="data")

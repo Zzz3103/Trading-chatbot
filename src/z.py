@@ -1,6 +1,7 @@
+import pandas as pd
 from index_data import Vector_Store
 from chat import ask_llm
-import pandas as pd
+from utils import render_prompt
 
 
 def main():
@@ -12,14 +13,15 @@ def main():
 
     # duyệt từng dòng
     answers = []
-    for index, row in df.iterrows():
+    for _, row in df.iterrows():
         question = row['inputs']
-        context = vector_store.search(query=question, top_k=3)
-        context = ""
-        for text, score in context:
-            context += str(text) + "\n"
-        answer = ask_llm(context + question)
+        docs = vector_store.search(query=question, top_k=3)
+        docs = [doc for doc in docs if doc.metadata["score"] >= 0.4]
+        prompt = render_prompt("templates/prompt.txt", docs, question=question)
+        answer = ask_llm(prompt)
+        answer.replace("\n", " ")
         answers.append(answer)
+
         print("=====================================")
         print(f"Question: {question}")
         print(answer)
