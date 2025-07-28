@@ -63,7 +63,7 @@ class Vector_Store:
         # Tạo mới collection
         self.qdrant_client.recreate_collection(
                     collection_name=self.collection_name,
-                    vectors_config=VectorParams(size=dim, distance=Distance.EUCLID),
+                    vectors_config=VectorParams(size=dim, distance=Distance.COSINE),
                 )
 
         text_splitter = RecursiveCharacterTextSplitter.from_tiktoken_encoder(
@@ -75,33 +75,40 @@ class Vector_Store:
         
         for f in files:
             file_name = f.split("/")[-1]
-            # Xử lý file .docx và .txt 
+            chunk_contents = []
+            # Xử lý file .docx, .txt và .pdf
             if f.endswith(".docx") or f.endswith(".txt") or f.endswith(".pdf"):
-                # continue
                 print(f"Processing file: {f}")
                 markdown_text = convert_to_markdown(f)
                 docs = [Document(page_content=markdown_text)]
-                chunk_contents = text_splitter.transform_documents(docs)
-                chunk_contents = ["Nguồn: " + file_name + '\n' + doc.page_content.replace("\n", " ") for doc in chunk_contents if len(doc.page_content) >= 40]
+                chunks = text_splitter.transform_documents(docs)
+                chunk_contents = ["Nguồn: " + file_name + '\n' + doc.page_content.replace("\n", " ") for doc in chunks if len(doc.page_content) >= 40]
 
-            # Xử lý file .csv
-            elif f.endswith(".csv"):
-                continue
+            # Xử lý file .json
+            elif f.endswith(".json"):
                 print(f"Processing file: {f}")
-                df = pd.read_csv(f)
-                rows = df.values.tolist()
-                rows = [str(row) for row in rows]
-                chunk_contents = []
-                for row in rows:
-                    docs = [Document(page_content=row)]
+                with open(f, "r", encoding="utf-8") as json_file:
+                    data = json.load(json_file)
+
+                for entry in data:
+                    content = entry.get("content", "")
+                    metadata = entry.get("metadata", "")
+
+                    if not content.strip():
+                        continue
+
+                    docs = [Document(page_content=content)]
                     chunks = text_splitter.transform_documents(docs)
-                    chunks = [doc.page_content for doc in chunks]
-                    chunk_contents.extend(chunks)
+
+                    # Gắn metadata vào mỗi chunk
+                    for doc in chunks:
+                        if len(doc.page_content) >= 40:
+                            chunk_contents.append(f"[{metadata}]\n{doc.page_content}")
 
             else:
                 # Bỏ qua các file khác
                 continue
-
+            
             # embedding 
             embeddings = self._embed_contents(chunk_contents)
 
@@ -134,7 +141,7 @@ class Vector_Store:
 if __name__ == "__main__":
     vector_store = Vector_Store()
     index_data = vector_store.index_data(path="data")
-    context = vector_store.search(query="chứng khoán là gì", top_k = 3)
+    context = vector_store.search(query="Lý do gì khiến SSI giữ nguyên dự báo lợi nhuận giai đoạn 2024–2028?", top_k = 3)
     for doc in context:
         print(doc.page_content, doc.metadata)
 
