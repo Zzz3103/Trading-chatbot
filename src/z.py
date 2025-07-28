@@ -15,7 +15,7 @@ def main():
     answers = []
     for _, row in df.iterrows():
         question = row['inputs']
-        docs = vector_store.search(query=question, top_k=3)
+        docs = vector_store.search(query=question, top_k=5)
         docs = [doc for doc in docs if doc.metadata["score"] >= 0.1]
         prompt = render_prompt("templates/prompt.txt", docs, question=question)
         answer = ask_llm(prompt)
